@@ -1,0 +1,43 @@
+{
+  "folders": [
+    {
+      "name": "personal-ai-dashboard",
+      "path": "."
+    },
+    {
+      "name": "backend",
+      "path": "./backend"
+    },
+    {
+      "name": "frontend",
+      "path": "./frontend"
+    }
+  ],
+  "settings": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit",
+      "source.fixAll.stylelint": "explicit"
+    },
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.formatOnType": true,
+    "json.format.keepLines": true,
+    "[json]": {
+      "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[python]": {
+      "editor.defaultFormatter": "charliermarsh.ruff",
+      "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+      }
+    },
+    "mypy-type-checker.args": ["--config-file=pyproject.toml"]
+  },
+  "extensions": {
+    "recommendations": [
+      "esbenp.prettier-vscode",
+      "ms-python.mypy-type-checker",
+      "charliermarsh.ruff"
+    ]
+  }
+}
