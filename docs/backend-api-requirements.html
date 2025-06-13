@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend API Requirements (Python) - Personal Insight Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .python-badge {
+            display: inline-block;
+            background: #3776ab;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        nav {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        nav h2 {
+            margin-bottom: 15px;
+            color: #6366f1;
+        }
+
+        nav ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        nav li {
+            margin: 8px 0;
+        }
+
+        nav a {
+            color: #6366f1;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #8b5cf6;
+            text-decoration: underline;
+        }
+
+        section {
+            background: white;
+            margin: 20px 0;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #6366f1;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #4b5563;
+            margin: 25px 0 15px;
+            font-size: 1.5rem;
+        }
+
+        h4 {
+            color: #6b7280;
+            margin: 20px 0 10px;
+            font-size: 1.2rem;
+        }
+
+        .endpoint {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-right: 10px;
+        }
+
+        .method.post { background: #10b981; color: white; }
+        .method.get { background: #3b82f6; color: white; }
+        .method.delete { background: #ef4444; color: white; }
+        .method.ws { background: #8b5cf6; color: white; }
+
+        .endpoint-path {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #374151;
+        }
+
+        pre {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        code {
+            font-family: 'Courier New', monospace;
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #6366f1;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+
+        .comment { color: #6b7280; }
+        .keyword { color: #f59e0b; }
+        .string { color: #10b981; }
+        .number { color: #3b82f6; }
+        .type { color: #8b5cf6; }
+        .decorator { color: #ec4899; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .architecture-diagram {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            margin: 20px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #e0e7ff;
+            color: #6366f1;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin: 0 5px;
+        }
+
+        .warning {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #92400e;
+        }
+
+        .info {
+            background: #dbeafe;
+            border: 1px solid #60a5fa;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #1e40af;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            section {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            pre {
+                font-size: 0.8rem;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🐍 Backend API Requirements</h1>
+        <p class="subtitle">Personal Insight Dashboard - Python/FastAPI Version</p>
+        <span class="python-badge">Python 3.11+ | FastAPI | Async/Await</span>
+    </header>
+
+    <div class="container">
+        <!-- Table of Contents -->
+        <nav>
+            <h2>📑 Table of Contents</h2>
+            <ul>
+                <li><a href="#architecture">1. API Architecture Overview</a></li>
+                <li><a href="#endpoints">2. API Endpoints</a></li>
+                <li><a href="#specifications">3. Detailed Endpoint Specifications</a></li>
+                <li><a href="#models">4. Data Models</a></li>
+                <li><a href="#realtime">5. WebSocket & Realtime Integration</a></li>
+                <li><a href="#security">6. Security & Rate Limiting</a></li>
+                <li><a href="#errors">7. Error Handling</a></li>
+                <li><a href="#environment">8. Environment Variables</a></li>
+                <li><a href="#deployment">9. Deployment Considerations</a></li>
+                <li><a href="#monitoring">10. Monitoring & Logging</a></li>
+            </ul>
+        </nav>
+
+        <!-- 1. Architecture -->
+        <section id="architecture">
+            <h2>1. API Architecture Overview</h2>
+            <div class="architecture-diagram">
+┌─────────────┐     ┌──────────────┐     ┌─────────────────┐
+│   Next.js   │────▶│   FastAPI    │────▶│ OpenAI Realtime │
+│  Frontend   │◀────│   Backend    │◀────│      API        │
+└─────────────┘     └──────────────┘     └─────────────────┘
+                            │
+                            ▼
+                    ┌──────────────┐
+                    │  PostgreSQL  │
+                    │   Database   │
+                    └──────────────┘
+            </div>
+            
+            <h3>Tech Stack</h3>
+            <ul>
+                <li><strong>Backend Framework:</strong> FastAPI (高速・モダン・型安全)</li>
+                <li><strong>ASGI Server:</strong> Uvicorn</li>
+                <li><strong>Database:</strong> PostgreSQL + SQLAlchemy ORM</li>
+                <li><strong>WebSocket:</strong> FastAPI WebSocket (built-in)</li>
+                <li><strong>Auth:</strong> JWT + python-jose</li>
+                <li><strong>AI Integration:</strong> OpenAI Python SDK</li>
+                <li><strong>Task Queue:</strong> Celery + Redis (オプション)</li>
+            </ul>
+
+            <h3>プロジェクト構造</h3>
+            <pre><code>personal-insight-backend/
+├── app/
+│   ├── __init__.py
+│   ├── main.py              <span class="comment"># FastAPIアプリケーション</span>
+│   ├── config.py            <span class="comment"># 設定管理</span>
+│   ├── models/              <span class="comment"># SQLAlchemyモデル</span>
+│   ├── schemas/             <span class="comment"># Pydanticスキーマ</span>
+│   ├── api/                 <span class="comment"># APIエンドポイント</span>
+│   │   ├── auth.py
+│   │   ├── conversations.py
+│   │   ├── insights.py
+│   │   └── websocket.py
+│   ├── services/            <span class="comment"># ビジネスロジック</span>
+│   ├── utils/               <span class="comment"># ユーティリティ関数</span>
+│   └── database.py          <span class="comment"># DB接続</span>
+├── requirements.txt
+├── .env
+└── docker-compose.yml</code></pre>
+        </section>
+
+        <!-- 2. Endpoints -->
+        <section id="endpoints">
+            <h2>2. API Endpoints</h2>
+            
+            <h3>🔐 認証</h3>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="endpoint-path">/api/auth/signup</span>
+            </div>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="endpoint-path">/api/auth/login</span>
+            </div>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="endpoint-path">/api/auth/logout</span>
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="endpoint-path">/api/auth/me</span>
+            </div>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="endpoint-path">/api/auth/refresh</span>
+            </div>
+
+            <h3>💬 会話管理</h3>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="endpoint-path">/api/conversations/start</span>
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="endpoint-path">/api/conversations/{conversation_id}</span>
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="endpoint-path">/api/conversations</span>
+            </div>
+            <div class="endpoint">
+                <span class="method delete">DELETE</span>
+                <span class="endpoint-path">/api/conversations/{conversation_id}</span>
+            </div>
+
+            <h3>📊 分析・インサイト</h3>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="endpoint-path">/api/insights/daily</span>
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="endpoint-path">/api/insights/weekly</span>
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="endpoint-path">/api/insights/keywords</span>
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="endpoint-path">/api/insights/emotions</span>
+            </div>
+
+            <h3>🔌 WebSocket</h3>
+            <div class="endpoint">
+                <span class="method ws">WS</span>
+                <span class="endpoint-path">/ws/conversation/{session_token}</span>
+            </div>
+        </section>
+
+        <!-- 3. Specifications -->
+        <section id="specifications">
+            <h2>3. Detailed Endpoint Specifications</h2>
+
+            <h3>FastAPI実装例</h3>
+            <pre><code><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI, HTTPException, Depends
+<span class="keyword">from</span> fastapi.security <span class="keyword">import</span> HTTPBearer, HTTPAuthorizationCredentials
+<span class="keyword">from</span> typing <span class="keyword">import</span> Optional
+<span class="keyword">import</span> uuid
+<span class="keyword">from</span> datetime <span class="keyword">import</span> datetime, timedelta
+
+app = FastAPI(title=<span class="string">"Personal Insight Dashboard API"</span>)
+security = HTTPBearer()
+
+<span class="decorator">@app.post</span>(<span class="string">"/api/conversations/start"</span>)
+<span class="keyword">async def</span> start_conversation(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    <span class="string">"""新しい会話セッションを開始"""</span>
+    <span class="comment"># JWTトークンの検証</span>
+    user_id = verify_token(credentials.credentials)
+    
+    <span class="comment"># セッション作成</span>
+    session_id = str(uuid.uuid4())
+    session_token = generate_session_token()
+    expires_at = datetime.utcnow() + timedelta(minutes=<span class="number">5</span>)
+    
+    <span class="keyword">return</span> {
+        <span class="string">"conversation_id"</span>: f<span class="string">"conv_{session_id}"</span>,
+        <span class="string">"websocket_url"</span>: f<span class="string">"wss://api.example.com/ws/conversation/{session_token}"</span>,
+        <span class="string">"session_token"</span>: session_token,
+        <span class="string">"expires_at"</span>: expires_at.isoformat()
+    }</code></pre>
+
+            <h3>WebSocket Handler</h3>
+            <pre><code><span class="keyword">from</span> fastapi <span class="keyword">import</span> WebSocket, WebSocketDisconnect
+<span class="keyword">import</span> json
+<span class="keyword">import</span> asyncio
+
+<span class="decorator">@app.websocket</span>(<span class="string">"/ws/conversation/{session_token}"</span>)
+<span class="keyword">async def</span> websocket_endpoint(websocket: WebSocket, session_token: str):
+    <span class="string">"""リアルタイム会話のWebSocketエンドポイント"""</span>
+    <span class="keyword">await</span> websocket.accept()
+    
+    <span class="comment"># OpenAI Realtime APIへの接続を初期化</span>
+    handler = RealtimeConversationHandler(websocket, session_token)
+    <span class="keyword">await</span> handler.initialize()
+    
+    <span class="keyword">try</span>:
+        <span class="keyword">while</span> <span class="keyword">True</span>:
+            <span class="comment"># クライアントからの音声データを受信</span>
+            data = <span class="keyword">await</span> websocket.receive_json()
+            
+            <span class="keyword">if</span> data[<span class="string">"type"</span>] == <span class="string">"audio"</span>:
+                <span class="keyword">await</span> handler.process_audio(data[<span class="string">"data"</span>])
+            
+    <span class="keyword">except</span> WebSocketDisconnect:
+        <span class="keyword">await</span> handler.end_conversation()
+    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+        logger.error(f<span class="string">"WebSocket error: {e}"</span>)
+        <span class="keyword">await</span> websocket.close()</code></pre>
+
+            <h3>Pydantic スキーマ例</h3>
+            <pre><code><span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel, Field
+<span class="keyword">from</span> typing <span class="keyword">import</span> List, Optional
+<span class="keyword">from</span> datetime <span class="keyword">import</span> datetime
+
+<span class="keyword">class</span> <span class="type">ConversationResponse</span>(BaseModel):
+    conversation_id: str
+    websocket_url: str
+    session_token: str
+    expires_at: datetime
+
+<span class="keyword">class</span> <span class="type">WeeklyInsightResponse</span>(BaseModel):
+    week_start: datetime
+    week_end: datetime
+    total_conversations: int
+    average_duration: float = Field(description=<span class="string">"平均会話時間（秒）"</span>)
+    
+    <span class="keyword">class</span> <span class="type">InsightData</span>(BaseModel):
+        emotion_scores: dict[str, float]
+        top_keywords: List[dict[str, any]]
+        ai_summary: str
+        growth_areas: List[str]
+    
+    insights: InsightData</code></pre>
+
+            <h3>GET /api/insights/weekly 詳細</h3>
+            <pre><code><span class="decorator">@app.get</span>(<span class="string">"/api/insights/weekly"</span>, response_model=WeeklyInsightResponse)
+<span class="keyword">async def</span> get_weekly_insights(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    <span class="string">"""週次インサイトを取得"""</span>
+    <span class="comment"># 週の開始日と終了日を計算</span>
+    today = datetime.utcnow().date()
+    week_start = today - timedelta(days=today.weekday())
+    week_end = week_start + timedelta(days=<span class="number">6</span>)
+    
+    <span class="comment"># データベースから会話データを取得</span>
+    conversations = db.query(Conversation).filter(
+        Conversation.user_id == current_user.id,
+        Conversation.started_at >= week_start,
+        Conversation.started_at <= week_end
+    ).all()
+    
+    <span class="comment"># インサイトを生成</span>
+    insights = await generate_weekly_insights(conversations)
+    
+    <span class="keyword">return</span> WeeklyInsightResponse(
+        week_start=week_start,
+        week_end=week_end,
+        total_conversations=len(conversations),
+        average_duration=insights.average_duration,
+        insights=insights
+    )</code></pre>
+        </section>
+
+        <!-- 4. Data Models -->
+        <section id="models">
+            <h2>4. Data Models</h2>
+
+            <h3>SQLAlchemy Models</h3>
+
+            <h4>User Model</h4>
+            <pre><code><span class="keyword">from</span> sqlalchemy <span class="keyword">import</span> Column, String, DateTime, Enum
+<span class="keyword">from</span> sqlalchemy.ext.declarative <span class="keyword">import</span> declarative_base
+<span class="keyword">from</span> datetime <span class="keyword">import</span> datetime
+<span class="keyword">import</span> enum
+
+Base = declarative_base()
+
+<span class="keyword">class</span> <span class="type">SubscriptionStatus</span>(enum.Enum):
+    TRIAL = <span class="string">"trial"</span>
+    ACTIVE = <span class="string">"active"</span>
+    EXPIRED = <span class="string">"expired"</span>
+
+<span class="keyword">class</span> <span class="type">User</span>(Base):
+    __tablename__ = <span class="string">"users"</span>
+    
+    id = Column(String, primary_key=<span class="keyword">True</span>, default=<span class="keyword">lambda</span>: str(uuid.uuid4()))
+    email = Column(String, unique=<span class="keyword">True</span>, nullable=<span class="keyword">False</span>)
+    hashed_password = Column(String, nullable=<span class="keyword">False</span>)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    subscription_status = Column(Enum(SubscriptionStatus), default=SubscriptionStatus.TRIAL)
+    trial_days_remaining = Column(Integer, default=<span class="number">3</span>)</code></pre>
+
+            <h4>Conversation Model</h4>
+            <pre><code><span class="keyword">from</span> sqlalchemy <span class="keyword">import</span> Column, String, DateTime, Integer, JSON, ForeignKey
+<span class="keyword">from</span> sqlalchemy.orm <span class="keyword">import</span> relationship
+
+<span class="keyword">class</span> <span class="type">Conversation</span>(Base):
+    __tablename__ = <span class="string">"conversations"</span>
+    
+    id = Column(String, primary_key=<span class="keyword">True</span>, default=<span class="keyword">lambda</span>: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey(<span class="string">"users.id"</span>), nullable=<span class="keyword">False</span>)
+    started_at = Column(DateTime, default=datetime.utcnow)
+    ended_at = Column(DateTime)
+    duration_seconds = Column(Integer)
+    transcript = Column(JSON)  <span class="comment"># メッセージのリスト</span>
+    ai_insights = Column(JSON)  <span class="comment"># 感情、キーワード、サマリー</span>
+    
+    <span class="comment"># リレーション</span>
+    user = relationship(<span class="string">"User"</span>, back_populates=<span class="string">"conversations"</span>)</code></pre>
+
+            <h4>DailyInsight Model</h4>
+            <pre><code><span class="keyword">class</span> <span class="type">DailyInsight</span>(Base):
+    __tablename__ = <span class="string">"daily_insights"</span>
+    
+    id = Column(String, primary_key=<span class="keyword">True</span>, default=<span class="keyword">lambda</span>: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey(<span class="string">"users.id"</span>), nullable=<span class="keyword">False</span>)
+    date = Column(Date, nullable=<span class="keyword">False</span>)
+    emotion_average = Column(Float)
+    top_topics = Column(JSON)  <span class="comment"># リスト形式</span>
+    ai_observation = Column(Text)
+    
+    <span class="comment"># 複合ユニーク制約</span>
+    __table_args__ = (
+        UniqueConstraint(<span class="string">'user_id'</span>, <span class="string">'date'</span>, name=<span class="string">'_user_date_uc'</span>),
+    )</code></pre>
+        </section>
+
+        <!-- 5. Realtime Integration -->
+        <section id="realtime">
+            <h2>5. WebSocket & Realtime Integration</h2>
+
+            <h3>RealtimeConversationHandler クラス</h3>
+            <pre><code><span class="keyword">import</span> websockets
+<span class="keyword">import</span> json
+<span class="keyword">import</span> asyncio
+<span class="keyword">from</span> openai <span class="keyword">import</span> AsyncOpenAI
+
+<span class="keyword">class</span> <span class="type">RealtimeConversationHandler</span>:
+    <span class="keyword">def</span> __init__(self, client_ws: WebSocket, session_token: str):
+        self.client_ws = client_ws
+        self.session_token = session_token
+        self.openai_client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+        self.conversation_id = <span class="keyword">None</span>
+        self.transcript = []
+        self.start_time = datetime.utcnow()
+        
+    <span class="keyword">async def</span> initialize(self):
+        <span class="string">"""OpenAI Realtime APIとの接続を初期化"""</span>
+        <span class="comment"># OpenAI WebSocket接続</span>
+        self.openai_ws = <span class="keyword">await</span> websockets.connect(
+            <span class="string">'wss://api.openai.com/v1/realtime'</span>,
+            extra_headers={
+                <span class="string">'Authorization'</span>: f<span class="string">'Bearer {settings.OPENAI_API_KEY}'</span>,
+                <span class="string">'OpenAI-Beta'</span>: <span class="string">'realtime=v1'</span>
+            }
+        )
+        
+        <span class="comment"># セッション設定を送信</span>
+        <span class="keyword">await</span> self.openai_ws.send(json.dumps({
+            <span class="string">'type'</span>: <span class="string">'session.update'</span>,
+            <span class="string">'session'</span>: {
+                <span class="string">'modalities'</span>: [<span class="string">'text'</span>, <span class="string">'audio'</span>],
+                <span class="string">'instructions'</span>: COACHING_PROMPT,
+                <span class="string">'voice'</span>: <span class="string">'alloy'</span>,
+                <span class="string">'turn_detection'</span>: {
+                    <span class="string">'type'</span>: <span class="string">'server_vad'</span>,
+                    <span class="string">'threshold'</span>: <span class="number">0.5</span>
+                }
+            }
+        }))
+        
+        <span class="comment"># 5分タイマーを設定</span>
+        asyncio.create_task(self._auto_end_conversation())
+        
+        <span class="comment"># OpenAIからの応答を処理するタスクを開始</span>
+        asyncio.create_task(self._handle_openai_responses())
+    
+    <span class="keyword">async def</span> process_audio(self, audio_data: dict):
+        <span class="string">"""クライアントからの音声データを処理"""</span>
+        <span class="keyword">await</span> self.openai_ws.send(json.dumps({
+            <span class="string">'type'</span>: <span class="string">'input_audio_buffer.append'</span>,
+            <span class="string">'audio'</span>: audio_data[<span class="string">'chunk'</span>]
+        }))
+    
+    <span class="keyword">async def</span> _handle_openai_responses(self):
+        <span class="string">"""OpenAIからの応答を処理"""</span>
+        <span class="keyword">try</span>:
+            <span class="keyword">async for</span> message <span class="keyword">in</span> self.openai_ws:
+                data = json.loads(message)
+                
+                <span class="keyword">if</span> data[<span class="string">'type'</span>] == <span class="string">'response.audio.delta'</span>:
+                    <span class="comment"># 音声応答をクライアントに転送</span>
+                    <span class="keyword">await</span> self.client_ws.send_json({
+                        <span class="string">'type'</span>: <span class="string">'ai_response'</span>,
+                        <span class="string">'data'</span>: {
+                            <span class="string">'audio'</span>: data[<span class="string">'delta'</span>]
+                        }
+                    })
+                
+                <span class="keyword">elif</span> data[<span class="string">'type'</span>] == <span class="string">'response.text.done'</span>:
+                    <span class="comment"># テキストをトランスクリプトに追加</span>
+                    self.transcript.append({
+                        <span class="string">'speaker'</span>: <span class="string">'ai'</span>,
+                        <span class="string">'text'</span>: data[<span class="string">'text'</span>],
+                        <span class="string">'

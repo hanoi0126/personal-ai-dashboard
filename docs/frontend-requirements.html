@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Requirements - Personal Insight Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            padding: 20px 40px;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #ffffff 0%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #6366f1;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 100px 40px 40px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+        }
+
+        /* Screen Section */
+        .screen-section {
+            margin-bottom: 100px;
+        }
+
+        .screen-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .screen-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .screen-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .screen-preview {
+            position: relative;
+            padding: 20px;
+            background: #0f0f1f;
+            min-height: 300px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .screen-info {
+            padding: 25px;
+        }
+
+        .screen-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .screen-description {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+
+        .screen-path {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #6366f1;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 5px 10px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        /* Flow Diagram */
+        .flow-diagram {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            margin: 40px 0;
+            overflow-x: auto;
+        }
+
+        .flow-container {
+            min-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Mock UI Components */
+        .mock-header {
+            background: rgba(255, 255, 255, 0.05);
+            height: 50px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mock-avatar {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .mock-content {
+            padding: 20px;
+        }
+
+        .mock-button {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 100px;
+            text-align: center;
+            margin: 20px auto;
+            max-width: 200px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .mock-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .mock-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .mock-stat {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .mock-stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #6366f1;
+            margin-bottom: 5px;
+        }
+
+        .mock-stat-label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        /* Component Library */
+        .component-section {
+            margin-top: 60px;
+        }
+
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .component-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .component-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .component-example {
+            margin-bottom: 20px;
+        }
+
+        .component-code {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+        }
+
+        /* Color Palette */
+        .color-palette {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .color-item {
+            text-align: center;
+        }
+
+        .color-box {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .color-name {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav {
+                padding: 15px 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .container {
+                padding: 80px 20px 20px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .screen-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Flow Nodes */
+        .flow-node {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px 25px;
+            display: inline-block;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+
+        .flow-node:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .flow-arrow {
+            color: #6366f1;
+            margin: 0 10px;
+            font-size: 1.5rem;
+        }
+
+        /* Loading Animation */
+        .loading-demo {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .loading-dot {
+            width: 12px;
+            height: 12px;
+            background: #6366f1;
+            border-radius: 50%;
+            animation: loading 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes loading {
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Voice Wave Animation */
+        .voice-wave {
+            display: flex;
+            gap: 3px;
+            justify-content: center;
+            align-items: center;
+            height: 60px;
+            margin: 30px 0;
+        }
+
+        .wave-bar {
+            width: 4px;
+            background: linear-gradient(to top, #6366f1, #8b5cf6);
+            border-radius: 2px;
+            animation: wave 1s ease-in-out infinite;
+        }
+
+        .wave-bar:nth-child(1) { animation-delay: 0s; height: 20px; }
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; height: 30px; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; height: 40px; }
+        .wave-bar:nth-child(4) { animation-delay: 0.3s; height: 35px; }
+        .wave-bar:nth-child(5) { animation-delay: 0.4s; height: 25px; }
+
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.5); }
+            50% { transform: scaleY(1.5); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <h1>Frontend Requirements</h1>
+            <ul class="nav-links">
+                <li><a href="#screens" class="active">画面一覧</a></li>
+                <li><a href="#flow">画面遷移</a></li>
+                <li><a href="#components">コンポーネント</a></li>
+                <li><a href="#design">デザインシステム</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="section-header">
+            <h2 class="section-title">Personal Insight Dashboard</h2>
+            <p class="section-subtitle">フロントエンド要件定義書</p>
+        </div>
+
+        <!-- Screen List Section -->
+        <section id="screens" class="screen-section">
+            <h3 style="font-size: 2rem; margin-bottom: 30px; color: #ffffff;">📱 画面一覧</h3>
+            
+            <div class="screen-grid">
+                <!-- Landing Page -->
+                <div class="screen-card">
+                    <div class="screen-preview">
+                        <div class="mock-content" style="text-align: center;">
+                            <h4 style="font-size: 2.5rem; margin: 40px 0 20px; background: linear-gradient(135deg, #ffffff 0%, #6366f1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Personal Insight Dashboard</h4>
+                            <p style="color: #94a3b8; margin-bottom: 40px;">毎日5分のAI対話で、本当の自分を発見</p>
+                            <div class="mock-button">今すぐ始める</div>
+                        </div>
+                    </div>
+                    <div class="screen-info">
+                        <h4 class="screen-name">ランディングページ</h4>
+                        <p class="screen-description">サービスの価値提案と登録への導線</p>
+                        <span class="screen-path">/</span>
+                    </div>
+                </div>
+
+                <!-- Sign Up -->
+                <div class="screen-card">
+                    <div class="screen-preview">
+                        <div class="mock-content">
+                            <h4 style="text-align: center; margin-bottom: 30px; color: #ffffff;">アカウント作成</h4>
+                            <div class="mock-input">メールアドレス</div>
+                            <div class="mock-input">パスワード</div>
+                            <div class="mock-button">登録する</div>
+                            <p style="text-align: center; color: #64748b; font-size: 0.85rem;">3日間無料でお試しいただけます</p>
+                        </div>
+                    </div>
+                    <div class="screen-info">
+                        <h4 class="screen-name">サインアップ</h4>
+                        <p class="screen-description">新規ユーザー登録画面</p>
+                        <span class="screen-path">/signup</span>
+                    </div>
+                </div>
+
+                <!-- Login -->
+                <div class="screen-card">
+                    <div class="screen-preview">
+                        <div class="mock-content">
+                            <h4 style="text-align: center; margin-bottom: 30px; color: #ffffff;">ログイン</h4>
+                            <div class="mock-input">メールアドレス</div>
+                            <div class="mock-input">パスワード</div>
+                            <div class="mock-button">ログイン</div>
+                        </div>
+                    </div>
+                    <div class="screen-info">
+                        <h4 class="screen-name">ログイン</h4>
+                        <p class="screen-description">既存ユーザーのログイン画面</p>
+                        <span class="screen-path">/login</span>
+                    </div>
+                </div>
+
+                <!-- Dashboard -->
+                <div class="screen-card">
+                    <div class="screen-preview">
+                        <div class="mock-header">
+                            <div class="mock-avatar"></div>
+                            <span style="color: #e2e8f0;">こんにちは、田中さん</span>
+                        </div>
+                        <div class="mock-content">
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                                <div class="mock-stat">
+                                    <div class="mock-stat-value">85%</div>
+                                    <div class="mock-stat-label">価値観一致度</div>
+                                </div>
+                                <div class="mock-stat">
+                                    <div class="mock-stat-value">7.5</div>
+                                    <div class="mock-stat-label">エネルギー</div>
+                                </div>
+                                <div class="mock-stat">
+                                    <div class="mock-stat-value">+12%</div>
+                                    <div class="mock-stat-label">成長率</div>
+                                </div>
+                            </div>
+                            <div class="mock-button">今日の振り返りを始める</div>
+                        </div>
+                    </div>
+                    <div class="screen-info">
+                        <h4 class="screen-name">ダッシュボード</h4>
+                        <p class="screen-description">個人に最適化されたメイン画面</p>
+                        <span class="screen-path">/dashboard</span>
+                    </div>
+                </div>
+
+                <!-- Conversation -->
+                <div class="screen-card">
+                    <div class="screen-preview">
+                        <div class="mock-content">
+                            <p style="text-align: center; color: #94a3b8; margin-bottom: 20px;">残り時間: 4:32</p>
+                            <div class="voice-wave">
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                                <div class="wave-bar"></div>
+                            </div>
+                            <p style="text-align: center; color: #e2e8f0; margin-top: 30px;">「今日はどんな1日でしたか？」</p>
+                            <div class="mock-button" style="background: #ef4444; margin-top: 40px;">会話を終了</div>
+                        </div>
+                    </div>
+                    <div class="screen-info">
+                        <h4 class="screen-name">AI対話画面</h4>
+                        <p class="screen-description">5分間のリアルタイム音声対話</p>
+                        <span class="screen-path">/conversation</span>
+                    </div>
+                </div>
+
+                <!-- Insights -->
+                <div class="screen-card">
+                    <div class="screen-preview">
+                        <div class="mock-content">
+                            <h4 style="color: #ffffff; margin-bottom: 20px;">週次インサイト</h4>
+                            <div class="mock-card">
+                                <p style="color: #6366f1; font-weight: 600; margin-bottom: 10px;">💡 今週の発見</p>
+                                <p style="color: #e2e8f0; font-size: 0.9rem;">朝の運動後は創造性が40%向上する傾向があります</p>
+                            </div>
+                            <div class="mock-card">
+                                <p style="color: #8b5cf6; font-weight: 600; margin-bottom: 10px;">📈 成長ポイント</p>
+                                <p style="color: #e2e8f0; font-size: 0.9rem;">プレゼンテーションへの不安が3週間で60%減少</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="screen-info">
+                        <h4 class="screen-name">インサイト</h4>
+                        <p class="screen-description">AIが生成した気づきと分析結果</p>
+                        <span class="screen-path">/insights</span>
+                    </div>
+                </div>
+
+                <!-- History -->
+                <div class="screen-card">
+                    <div class="screen-preview">
+                        <div class="mock-content">
+                            <h4 style="color: #ffffff; margin-bottom: 20px;">対話履歴</h4>
+                            <div class="mock-card">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <p style="color: #ffffff; font-weight: 600;">6月13日（金）</p>
+                                        <p style="color: #94a3b8; font-size: 0.85rem;">5分12秒 • ポジティブ 78%</p>
+                                    </div>
+                                    <span style="color: #6366f1;">→</span>
+                                </div>
+                            </div>
+                            <div class="mock-card">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <p style="color: #ffffff; font-weight: 600;">6月12日（木）</p>
+                                        <p style="color: #94a3b8; font-size: 0.85rem;">4分48秒 • ポジティブ 65%</p>
+                                    </div>
+                                    <span style="color: #6366f1;">→</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="screen-info">
+                        <h4 class="screen-name">履歴</h4>
+                        <p class="screen-description">過去の対話記録と詳細</p>
+                        <span class="screen-path">/history</span>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div class="screen-card">
+                    <div class="screen-preview">
+                        <div class="mock-content">
+                            <h4 style="color: #ffffff; margin-bottom: 20px;">設定</h4>
+                            <div class="mock-card">
+                                <p style="color: #ffffff; margin-bottom: 5px;">通知設定</p>
+                                <p style="color: #94a3b8; font-size: 0.85rem;">毎日のリマインダー: 21:00</p>
+                            </div>
+                            <div class="mock-card">
+                                <p style="color: #ffffff; margin-bottom: 5px;">プライバシー</p>
+                                <p style="color: #94a3b8; font-size: 0.85rem;">データの取り扱いについて</p>
+                            </div>
+                            <div class="mock-card">
+                                <p style="color: #ffffff; margin-bottom: 5px;">サブスクリプション</p>
+                                <p style="color: #94a3b8; font-size: 0.85rem;">無料トライアル中（残り2日）</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="screen-info">
+                        <h4 class="screen-name">設定</h4>
+                        <p class="screen-description">アカウントと通知の管理</p>
+                        <span class="screen-path">/settings</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Flow Diagram Section -->
+        <section id="flow" class="screen-section">
+            <h3 style="font-size: 2rem; margin-bottom: 30px; color: #ffffff;">🔄 画面遷移フロー</h3>
+            
+            <div class="flow-diagram">
+                <div class="flow-container" style="text-align: center;">
+                    <h4 style="color: #ffffff; margin-bottom: 30px;">メインフロー</h4>
+                    
+                    <div style="margin-bottom: 40px;">
+                        <span class="flow-node">ランディング</span>
+                        <span class="flow-arrow">→</span>
+                        <span class="flow-node">サインアップ/ログイン</span>
+                        <span class="flow-arrow">→</span>
+                        <span class="flow-node">ダッシュボード</span>
+                    </div>
+                    
+                    <div style="margin-bottom: 40px;">
+                        <span class="flow-node">ダッシュボード</span>
+                        <span class="flow-arrow">→</span>
+                        <span class="flow-node" style="background: rgba(99, 102, 241, 0.1); border-color: #6366f1;">AI対話</span>
+                        <span class="flow-arrow">→</span>
+                        <span class="flow-node">対話完了</span>
+                        <span class="flow-arrow">→</span>
+                        <span class="flow-node">ダッシュボード（更新）</span>
+                    </div>
+                    
+                    <h4 style="color: #ffffff; margin: 40px 0 30px;">サブフロー</h4>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; max-width: 800px; margin: 0 auto;">
+                        <div>
+                            <p style="color: #94a3b8; margin-bottom: 15px;">インサイト確認</p>
+                            <span class="flow-node">ダッシュボード</span>
+                            <br>
+                            <span class="flow-arrow" style="display: block;">↓</span>
+                            <span class="flow-node">インサイト</span>
+                        </div>
+                        
+                        <div>
+                            <p style="color: #94a3b8; margin-bottom: 15px;">履歴確認</p>
+                            <span class="flow-node">ダッシュボード</span>
+                            <br>
+                            <span class="flow-arrow" style="display: block;">↓</span>
+                            <span class="flow-node">履歴</span>
+                        </div>
+                        
+                        <div>
+                            <p style="color: #94a3b8; margin-bottom: 15px;">設定変更</p>
+                            <span class="flow-node">ダッシュボード</span>
+                            <br>
+                            <span class="flow-arrow" style="display: block;">↓</span>
+                            <span class="flow-node">設定</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Components Section -->
+        <section id="components" class="component-section">
+            <h3 style="font-size: 2rem; margin-bottom: 30px; color: #ffffff;">🧩 UIコンポーネント</h3>
+            
+            <div class="component-grid">
+                <!-- Button Component -->
+                <div class="component-card">
+                    <h4 class="component-title">ボタン</h4>
+                    <div class="component-example">
+                        <div class="mock-button" style="margin: 10px 0;">プライマリボタン</div>
+                        <div style="background: transparent; border: 1px solid #6366f1; color: #6366f1; padding: 12px 24px; border-radius: 100px; text-align: center; margin: 10px 0; font-size: 0.9rem; font-weight: 600;">セカンダリボタン</div>
+                        <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 12px 24px; border-radius: 100px; text-align: center; margin: 10px 0; font-size: 0.9rem; font-weight: 600;">危険なアクション</div>
+                    </div>
+                    <div class="component-code">
+&lt;Button variant="primary"&gt;
+  プライマリボタン
+&lt;/Button&gt;</div>
+                </div>
+
+                <!-- Card Component -->
+                <div class="component-card">
+                    <h4 class="component-title">カード</h4>
+                    <div class="component-example">
+                        <div class="mock-card">
+                            <h5 style="color: #ffffff; margin-bottom: 10px;">カードタイトル</h5>
+                            <p style="color: #94a3b8; font-size: 0.9rem;">カードの説明文がここに入ります。背景は半透明で、ボーダーがあります。</p>
+                        </div>
+                    </div>
+                    <div class="component-code">
+&lt;Card&gt;
+  &lt;CardTitle&gt;タイトル&lt;/CardTitle&gt;
+  &lt;CardContent&gt;内容&lt;/CardContent&gt;
+&lt;/Card&gt;</div>
+                </div>
+
+                <!-- Loading States -->
+                <div class="component-card">
+                    <h4 class="component-title">ローディング</h4>
+                    
